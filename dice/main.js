@@ -26,6 +26,11 @@ const diceroll = (instr) => {
   }
   const n = parseInt (res[1] || '1', 10)
   const diceMax = parseInt (res[2], 10)
+  if (diceMax === 0)
+  {
+    log (`${instr} => invalid expression`)
+    return
+  }
   // console.log ({n, diceMax})
   const results = []
   for (let i = 0; i < n; ++ i)
@@ -79,4 +84,4 @@ button_area.addEventListener ('click', (ev) => {
   }
 })
 
-input.focus ()
+// input.focus ()
