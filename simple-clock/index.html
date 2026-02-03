@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Simple Clock</title>
+    <style type="text/css">
+    *, *::before, *::after
+    {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+
+    html, body
+    {
+      height: 100%;
+    }
+
+    body
+    {
+      display: grid;
+      place-content: center;
+      place-items: center;
+
+      font-family: monospace;
+      font-weight: 700;
+      font-feature-settings: "zero";
+      font-variant-numeric: slashed-zero;
+    }
+
+    #time_view, #date_view
+    {
+      display: block;
+      text-shadow: 4px 4px 5px #000000;
+    }
+
+    #time_view
+    {
+      font-size: min(20vw, 200px);
+    }
+
+    #date_view
+    {
+      font-size: min(6vw, 60px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color: #ffffff;
+        background-color: #2c2f33;
+      }
+    }
+    </style>
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <div id="time_view">--:--:--</div>
+    <div id="date_view">----/--/-- (---)</div>
+  </body>
+</html>
