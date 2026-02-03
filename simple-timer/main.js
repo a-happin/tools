@@ -65,7 +65,8 @@ const tick = () => {
 
   const elapsed = now - started_timestamp
   const rate = elapsed / duration
-  progress_bar.style.strokeDashoffset = `${300 - rate * circumference}`
+
+  progress_bar.style.strokeDashoffset = rate < 1 ? `${300 - rate * circumference}` : '0'
 
   if (elapsed < duration)
   {
