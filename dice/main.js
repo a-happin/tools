@@ -83,5 +83,3 @@ button_area.addEventListener ('click', (ev) => {
     diceroll (ev.target.textContent)
   }
 })
-
-// input.focus ()
