@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Title</title>
+    <style type="text/css">
+    *, *::before, *::after
+    {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      box-sizing: border-box;
+    }
+
+    body
+    {
+      /* width: 80%; */
+      /* margin: 0 auto; */
+
+      font-family: sans-serif;
+      font-size: 20px;
+    }
+
+    .global-label
+    {
+      display: grid;
+      grid-template-columns: 4em 1fr;
+
+      align-items: center;
+
+      & > span
+      {
+        display: grid;
+        place-items: center;
+      }
+    }
+
+    input
+    {
+      border: 1px solid #60666b;
+
+      padding: 0.5em;
+      font-size: inherit;
+    }
+
+    input[type="number" i], input[inputMode="numeric" i]
+    {
+      text-align: end;
+    }
+
+    button
+    {
+      padding: 0.5em 1em;
+      border: 1px solid #60666b;
+      border-radius: 4px;
+      background-color: unset;
+      color: unset;
+      cursor: pointer;
+      &:is(:hover,:active)
+      {
+        background-color: #60666b;
+      }
+
+      font-size: inherit;
+    }
+
+    .remove_button
+    {
+      /* display: grid; */
+      /* place-content: center; */
+      padding: 0.5em;
+
+      aspect-ratio: 1;
+      width: stretch;
+      height: stretch;
+
+      position: relative;
+
+      border: 1px solid #ff0000;
+      &:is(:hover,:active)
+      {
+        background-color: #ff0000;
+      }
+
+      &::after
+      {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        /* display: inline-block; */
+        /* width: stretch; */
+        /* height: stretch; */
+        background-color: #e8e8e8;
+        /* aspect-ratio: 1; */
+        mask: url("images/cross.svg") no-repeat center / contain;
+      }
+    }
+
+    #products_view
+    {
+      margin-top: 1em;
+    }
+
+    .product_view
+    {
+      display: grid;
+      grid-template-columns: minmax(3em,3fr) minmax(4em,2fr) 3em auto;
+
+      align-items: center;
+    }
+
+    hr
+    {
+      border-bottom: 1px solid #666;
+    }
+    </style>
+    <script type="module" src="main.js"></script>
+  </head>
+  <body>
+    <label class="global-label"><span>所持金</span><input type="text" inputmode="numeric" id="input_money" placeholder="円"></label>
+    <label class="global-label"><span>mod</span><input type="text" inputmode="numeric" id="input_mod" value="1000"></label>
+    <div id="products_view"></div>
+    <button id="add_button">Add</button>
+    <button id="solve_button">Solve</button>
+    <pre id="result_view"></pre>
+  </body>
+</html>
