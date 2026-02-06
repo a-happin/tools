@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
-    <title>Title</title>
+    <title>Zero Coin</title>
     <style type="text/css">
     *, *::before, *::after
     {
@@ -45,7 +45,7 @@
       font-size: inherit;
     }
 
-    input[type="number" i], input[inputMode="numeric" i]
+    input[type="number" i], input[inputmode="numeric" i]
     {
       text-align: end;
     }
@@ -70,11 +70,11 @@
     {
       /* display: grid; */
       /* place-content: center; */
-      padding: 0.5em;
 
       aspect-ratio: 1;
-      width: stretch;
-      height: stretch;
+      height: 100%;
+
+      /* margin-right: 4px; */
 
       position: relative;
 
@@ -91,11 +91,7 @@
         position: absolute;
         inset: 0;
 
-        /* display: inline-block; */
-        /* width: stretch; */
-        /* height: stretch; */
         background-color: #e8e8e8;
-        /* aspect-ratio: 1; */
         mask: url("images/cross.svg") no-repeat center / contain;
       }
     }
@@ -108,7 +104,7 @@
     .product_view
     {
       display: grid;
-      grid-template-columns: minmax(3em,3fr) minmax(4em,2fr) 3em auto;
+      grid-template-columns: minmax(3em,3fr) minmax(4em,2fr) 6ch auto;
 
       align-items: center;
     }
