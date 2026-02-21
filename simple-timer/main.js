@@ -1,10 +1,72 @@
-const timer_view = document.getElementById ('timer')
+const time_view = document.getElementById ('time_view')
 const progress_bar = document.getElementById ('progress_bar')
-/** @type {string[]} */
-const input_buf = []
+const buttons_container = document.getElementById ('buttons_container')
+
+class InputBuf
+{
+  /** @type {string[]} */
+  buf = []
+
+  /** @param {string} str */
+  push (str)
+  {
+    this.buf.push (str)
+  }
+
+  pop ()
+  {
+    this.buf.pop ()
+  }
+
+  clear ()
+  {
+    this.buf.length = 0
+  }
+
+  as_str ()
+  {
+    return this.buf.join ('') || '0'
+  }
+
+  solve ()
+  {
+    let res = 0
+    let tmp = 0
+    for (const k of this.buf)
+    {
+      if (k === 'h')
+      {
+        res += tmp * 3600
+        tmp = 0
+      }
+      else if (k === 'm')
+      {
+        res += tmp * 60
+        tmp = 0
+      }
+      else if (k === 's')
+      {
+        res += tmp
+        tmp = 0
+      }
+      else if ('0' <= k && k <= '9')
+      {
+        tmp *= 10
+        tmp += k.charCodeAt (0) - 48
+      }
+    }
+    res += tmp
+    return res
+  }
+}
+
+// /** @type {string[]} */
+const input_buf = new InputBuf ()
 
 let duration
 let started_timestamp
+/** @type {WakeLockSentinel | undefined} */
+let wakeLock
 
 const circumference = 90 * Math.PI
 
@@ -60,6 +122,12 @@ const beep = () => {
   }
 }
 
+// 画面をつけっぱなしにするAPI, chromeで動作するらしい
+const requestWakeLock = async () => {
+  wakeLock = await navigator.wakeLock.request ('screen')
+  wakeLock.addEventListener ('release', () => { wakeLock = undefined })
+}
+
 const tick = () => {
   const now = Date.now ()
 
@@ -70,22 +138,28 @@ const tick = () => {
 
   if (elapsed < duration)
   {
-    timer_view.textContent = strftime (Math.ceil ((duration - elapsed) / 1000))
+    time_view.textContent = strftime (Math.ceil ((duration - elapsed) / 1000))
     requestAnimationFrame (tick)
   }
   else
   {
-    timer_view.textContent = '0'
+    time_view.textContent = '0'
     duration = undefined
     started_timestamp = undefined
     beep ()
+    wakeLock?.release ()
   }
 }
 
-const start = () => {
+
+const start = async () => {
+  duration = input_buf.solve () * 1000
+  input_buf.clear ()
   started_timestamp = Date.now ()
   requestAnimationFrame (tick)
+  requestWakeLock ()
 }
+
 
 document.addEventListener ('keydown', (ev) => {
   if (duration == null)
@@ -93,45 +167,60 @@ document.addEventListener ('keydown', (ev) => {
     if (('0' <= ev.key && ev.key <= '9') || (ev.key === 'h' || ev.key === 'm' || ev.key === 's'))
     {
       input_buf.push (ev.key)
-      timer_view.textContent = input_buf.join ('')
+      time_view.textContent = input_buf.as_str ()
     }
     else if (ev.key === 'Backspace')
     {
       input_buf.pop ()
-      timer_view.textContent = input_buf.join ('')
+      time_view.textContent = input_buf.as_str ()
     }
-    else if (ev.key === 'Enter' || ev.key === 'Space')
+    else if (ev.key === 'Enter')
     {
-      duration = 0
-      let tmp = 0
-      for (const k of input_buf)
-      {
-        if (k === 'h')
-        {
-          duration += tmp * 3600
-          tmp = 0
-        }
-        else if (k === 'm')
-        {
-          duration += tmp * 60
-          tmp = 0
-        }
-        else if (k === 's')
-        {
-          duration += tmp
-          tmp = 0
-        }
-        else
-        {
-          tmp *= 10
-          tmp += k.charCodeAt (0) - 48
-        }
-      }
-      duration += tmp
-      // console.log ('duration', duration)
-      input_buf.length = 0
-      duration *= 1000
       start ()
     }
   }
 })
+
+document.addEventListener ('touchend', (ev) => {
+  if (duration == null && buttons_container.style.display === 'none')
+  {
+    ev.preventDefault ()
+    // ev.stopPropagation ()
+    buttons_container.style.display = ''
+  }
+}, {passive: false})
+
+/** @param {Event} ev*/
+const inputButtonHandler = (ev) => {
+  if (ev.currentTarget != null)
+  {
+    const id = ev.currentTarget.getAttribute ('id')
+    if (id === 'start_button')
+    {
+      start ()
+      buttons_container.style.display = 'none'
+    }
+    else if (id === 'backspace_button')
+    {
+      input_buf.pop ()
+      time_view.textContent = input_buf.as_str ()
+    }
+    else
+    {
+      const content = ev.currentTarget.textContent
+      if (content !== '')
+      {
+        input_buf.push (content)
+        time_view.textContent = input_buf.as_str ()
+      }
+    }
+  }
+}
+
+for (const b of buttons_container.children)
+{
+  if (b instanceof HTMLButtonElement)
+  {
+    b.addEventListener ('click', inputButtonHandler)
+  }
+}
