@@ -135,7 +135,7 @@ const createTimer = () => {
   /** @type {number} */
   let duration
 
-  /** @type {number} */
+  /** @type {number | undefined} */
   let started
 
   /** @type {WakeLockSentinel | undefined} */
@@ -155,7 +155,7 @@ const createTimer = () => {
 
   /** @type {Parameters<typeof requestAnimationFrame>[0]} */
   const tick = (now) => {
-    const elapsed = now - started
+    const elapsed = now - (started ??= now)
     const rate = elapsed / duration
 
     progress_bar.style.strokeDashoffset = rate < 1 ? `${300 - rate * circumference}` : '0'
@@ -177,7 +177,7 @@ const createTimer = () => {
     is_running = true
     requestWakeLock ()
     duration = duration_
-    started = performance.now ()
+    started = undefined
     requestAnimationFrame (tick)
   }
 
