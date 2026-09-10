@@ -34,14 +34,9 @@ const strftime = (date) => ({
 
 const draw = () => {
   const date = strftime (new Date ())
-  // time_view.textContent = format_time (date)
-  // const t = format_time2 (date)
   time_view.hour.textContent = date.hour
   time_view.min.textContent = date.min
   if (time_view.sec != null) time_view.sec.textContent = date.sec
-
-  // time_view.sec.textContent = t.S
-  // date_view.textContent = format_date (date)
   date_view.textContent = `${date.year}-${date.month}-${date.date} ${date.day}`
 }
 
